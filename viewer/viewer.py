@@ -1,7 +1,6 @@
 """Point Cloud Viewer with keyboard navigation and multi-window synchronization."""
 
 import os
-from datetime import datetime
 
 import numpy as np
 import open3d as o3d
@@ -58,8 +57,8 @@ class PointCloudViewer:
             "1": [("Main", rgb)],
             "2": [("Main", gt_colors)],
             "3": [("Main", pred_colors)],
-            "4": [("RGB", rgb), ("Ground Truth", gt_colors), ("Prediction", pred_colors)],
-            "5": [("Ground Truth", gt_colors), ("Prediction", pred_colors)],
+            "4": [("rgb", rgb), ("gt", gt_colors), ("pred", pred_colors)],
+            "5": [("gt", gt_colors), ("pred", pred_colors)],
         }
         return configs.get(self.mode, configs["5"])
 
@@ -253,7 +252,6 @@ class PointCloudViewer:
     def save_screenshots_callback(self, vis) -> bool:
         """Save screenshots with transparent background using chroma key."""
         block_name = self.blocks[self.current_idx]
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         save_dir = os.path.join(self.data_dir, "screenshots")
         os.makedirs(save_dir, exist_ok=True)
 
@@ -275,7 +273,7 @@ class PointCloudViewer:
             rgba = np.dstack([img_uint8, alpha])
 
             safe_win = win_name.replace(" ", "_")
-            filepath = os.path.join(save_dir, f"{block_name}_{safe_win}_{timestamp}.png")
+            filepath = os.path.join(save_dir, f"{block_name}_{safe_win}.png")
             Image.fromarray(rgba, mode="RGBA").save(filepath)
             saved_files.append(filepath)
 
